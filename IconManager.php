@@ -18,7 +18,7 @@ class LA_IconManager
     private static $option = 'la_icon_fonts';
     private static $filters = array('\.eot', '\.svg', '\.ttf', '\.woff', '\.json', 'style\.css');
 
-    public function __construct($prefix)
+    public function __construct()
     {
         $this->response = new \WP_Ajax_Response;
         $this->paths = wp_upload_dir();
@@ -38,8 +38,8 @@ class LA_IconManager
         $this->addDefaultFonts();
 
         add_action('admin_enqueue_scripts', array($this, 'enqueueScripts'));
-        add_action('wp_ajax_'.$prefix.'_upload_icons', array($this, 'ajax_handle_upload_icons'));
-        add_action('wp_ajax_'.$prefix.'_delete_icons', array($this, 'ajax_handle_delete_icons'));
+        add_action('wp_ajax_laim_upload_icons', array($this, 'ajax_handle_upload_icons'));
+        add_action('wp_ajax_laim_delete_icons', array($this, 'ajax_handle_delete_icons'));
     }
 
     public function enqueueScripts()
@@ -536,10 +536,10 @@ class LA_IconManager
         return $response;
     }
 
-    public static function getInstance($prefix)
+    public static function getInstance()
     {
         if (self::$instance === null) {
-            return self::$instance = new LA_IconManager($prefix);
+            return self::$instance = new LA_IconManager();
         }
     }
 

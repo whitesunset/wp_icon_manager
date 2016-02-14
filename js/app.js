@@ -171,7 +171,7 @@ LAIconManager.prototype.bindUpload = function () {
             }
 
             self.ajax.ajax({
-                action: 'nksp_upload_icons',
+                action: 'laim_upload_icons',
                 data: {
                     url: json.url
                 },
@@ -222,7 +222,7 @@ LAIconManager.prototype.bindDelete = function () {
         $notify.html('');
 
         self.ajax.ajax({
-            action: 'nksp_delete_icons',
+            action: 'laim_delete_icons',
             data: {
                 font: font
             },
