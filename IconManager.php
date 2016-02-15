@@ -98,6 +98,11 @@ class LA_IconManager
             foreach ($fonts as $font => $info) {
                 $icon_set = array();
                 $file = $info['include'].'/'.$info['config'];
+
+                if(!$file){
+                    return;
+                }
+
                 $json = file_get_contents($file);
                 $icons = json_decode($json, true);
 

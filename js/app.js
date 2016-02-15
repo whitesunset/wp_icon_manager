@@ -228,11 +228,15 @@ LAIconManager.prototype.bindDelete = function () {
             },
             success_handler: function (data) {
                 $spinner.css('visibility', 'hidden');
-                $notify.html('Icons deleted! Reloading the page... ').show();
+                $notify.html('Icon pack deleted!').show();
                 $('.icon-set-' + font.toLowerCase().replace_all(' ', '_'), $(self.el)).hide();
+                if(window['la_icon_manager_collection'].contains(font)){
+                    var model = window['la_icon_manager_collection'].findWhere({'name': font});
+                    window['la_icon_manager_collection'].remove(model);
+                }
 
                 setTimeout(function () {
-                    window.location.reload();
+                    $notify.html('');
                 }, 2000);
             },
             success_error_handler: function (errors) {
