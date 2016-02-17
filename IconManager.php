@@ -37,12 +37,23 @@ class LA_IconManager
 
         $this->addDefaultFonts();
 
-        add_action('admin_enqueue_scripts', array($this, 'enqueueScripts'));
+        add_action('admin_enqueue_scripts', array($this, 'enqueueAdminScripts'), 9);
+        add_action('wp_enqueue_scripts', array($this, 'enqueuePublicScripts'), 9);
+
         add_action('wp_ajax_laim_upload_icons', array($this, 'ajax_handle_upload_icons'));
         add_action('wp_ajax_laim_delete_icons', array($this, 'ajax_handle_delete_icons'));
     }
 
-    public function enqueueScripts()
+    public function enqueuePublicScripts()
+    {
+        wp_register_script('la-icon-manager-md5', self::$dir.'js/md5.js', array(), $this->version, false);
+        wp_register_script('la-icon-manager-util', self::$dir.'js/util.js', array(), $this->version, false);
+
+        wp_enqueue_script('la-icon-manager-md5');
+        wp_enqueue_script('la-icon-manager-util');
+    }
+
+    public function enqueueAdminScripts()
     {
         wp_enqueue_style('la-icon-manager', self::$dir.'css/style.css');
         wp_enqueue_style('la-icon-maneger-style', $this->paths['fonts_styles']);

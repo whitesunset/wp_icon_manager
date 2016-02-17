@@ -266,7 +266,7 @@ LAIconManager.prototype.bindPreview = function () {
         var $preview = $('.preview', $(self.el));
         var icon;
         if (self.set === '####') {
-            icon = '<i class="custom" style="background:url(' + self.icon + ')"></i>';
+            icon = '<i class="custom" style="background-image:url(' + self.icon + ')"></i>';
         } else {
             icon = '<i class="la' + md5(self.set) + '-' + self.icon + '"></i>';
         }

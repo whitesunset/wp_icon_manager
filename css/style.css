@@ -48,6 +48,7 @@
     width: calc(100% - 42px);
     max-width: calc(100% - 42px);
     padding: 5px 7px;
+    margin: 0;
 }
 
 
