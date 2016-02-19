@@ -1,6 +1,6 @@
 function LAIconManager(id, el, collection, field) {
     var self = this;
-    this.ajax = new AwesomeAjax('nksp');
+    this.ajax = new AwesomeAjax('laim');
 
     this.id = id;
     this.el = el;
