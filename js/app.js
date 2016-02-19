@@ -57,7 +57,7 @@ LAIconManager.prototype.bindCustomField = function () {
         var set = '####';
         var icon = $(self.custom_field).val().trim();
 
-        if(icon === ''){
+        if (icon === '') {
             return;
         }
 
@@ -230,7 +230,7 @@ LAIconManager.prototype.bindDelete = function () {
                 $spinner.css('visibility', 'hidden');
                 $notify.html('Icon pack deleted!').show();
                 $('.icon-set-' + font.toLowerCase().replace_all(' ', '_'), $(self.el)).hide();
-                if(window['la_icon_manager_collection'].contains(font)){
+                if (window['la_icon_manager_collection'].contains(font)) {
                     var model = window['la_icon_manager_collection'].findWhere({'name': font});
                     window['la_icon_manager_collection'].remove(model);
                 }
@@ -283,11 +283,30 @@ LAIconManager.prototype.showSearch = function () {
     return this;
 }
 
-LAIconManager.prototype.showIconSelect = function (docs_url) {
+LAIconManager.prototype.getCollection = function (filter) {
+    var collection = this.collection ? this.collection.clone() : [];
+    var self = this;
+
+    if (filter instanceof Array && filter.length > 0) {
+        collection.reset();
+        filter.forEach(function (item) {
+            var model = self.collection.findWhere({name: item});
+            collection.add(model);
+        });
+    }
+
+    return collection.models;
+}
+
+LAIconManager.prototype.showIconSelect = function (filter, docs_url) {
+    docs_url = typeof filter !== 'undefined' ? docs_url : '';
+    filter = typeof filter !== 'undefined' ? filter : [];
+
     var $ = jQuery;
     var self = this;
     var $field = $(this.field);
     this.custom_field = '[name="la_icon_manager_' + self.id + '_custom"]';
+    var collection = this.getCollection(filter);
 
     self.bindField()
     self.bindCustomField()
@@ -303,7 +322,7 @@ LAIconManager.prototype.showIconSelect = function (docs_url) {
     });
     view.render({
         id: self.id,
-        items: self.collection.models,
+        items: collection,
         $field: $field,
         docs_url: docs_url,
         library: false,
@@ -314,13 +333,15 @@ LAIconManager.prototype.showIconSelect = function (docs_url) {
     return this;
 }
 
-LAIconManager.prototype.showLibrary = function () {
+LAIconManager.prototype.showLibrary = function (filter) {
+    filter = typeof filter !== 'undefined' ? filter : [];
     var view = new LAIconManagerView({
         template: la_icon_manager_templates['library'],
         el: this.el
     });
+    var collection = this.getCollection(filter);
     view.render({
-        items: this.collection ? this.collection.models : [],
+        items: collection,
         library: true
     });
 

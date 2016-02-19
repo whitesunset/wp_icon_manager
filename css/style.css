@@ -51,7 +51,6 @@
     margin: 0;
 }
 
-
 .la-icon-manager .iconbox{
     min-width: 255px;
     background: #fff;
@@ -70,6 +69,9 @@
 .la-icon-manager .font_name{
     border: 1px solid #ddd;
     padding: 10px;
+    margin: 0;
+}
+.la_icon_manager_select .font_name{
     margin: 0 10px 0 0;
 }
 .la-icon-manager .selector .font_name{

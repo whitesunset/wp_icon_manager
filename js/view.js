@@ -9,7 +9,8 @@ LAIconManagerView = Backbone.View.extend({
 
     },
     render: function (data) {
-        this.$el.html(this.template(data));
+        this.$el.empty();
+        this.$el.append(this.template(data));
         this.trigger('render');
         return this;
     },
