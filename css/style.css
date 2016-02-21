@@ -41,7 +41,7 @@
 .la_icon_manager_custom{
     background-position: 50% 50% !important;
     background-repeat: no-repeat !important;
-    background-size: cover !important;
+    background-size: cover;
 }
 .la-icon-manager .icon-manager-header .search{
     float: left;
