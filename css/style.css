@@ -153,6 +153,7 @@
     vertical-align: text-bottom;
     display: inline-block;
     line-height: 32px;
+    color: #32373c;
 }
 .la-icon-manager ul.icons-list li > i:before{
     vertical-align: top;
