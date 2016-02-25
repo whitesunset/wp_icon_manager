@@ -20,6 +20,7 @@ LAIconManagerUtil = {
     getIconClass: function (string, delimeter, prefix) {
         delimeter = typeof delimeter === 'undefined' ? '_####_' : delimeter;
         prefix = typeof prefix === 'undefined' ? 'la' : prefix;
+        string = string.split('+').join(' ');
 
         var info = string.split(delimeter);
         if (info) {
