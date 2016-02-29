@@ -42,6 +42,8 @@ class LA_IconManager
 
         add_action('wp_ajax_laim_upload_icons', array($this, 'ajax_handle_upload_icons'));
         add_action('wp_ajax_laim_delete_icons', array($this, 'ajax_handle_delete_icons'));
+
+        add_action('admin_footer', array($this, 'loadCollection'));
     }
 
     public function enqueuePublicScripts()
@@ -95,7 +97,7 @@ class LA_IconManager
         wp_enqueue_script('la-icon-manager-app');
     }
 
-    public static function loadCollection()
+    public function loadCollection()
     {
         $fonts = get_option(self::$option);
 
@@ -140,7 +142,7 @@ class LA_IconManager
         $html .= '});';
         $html .= '</script>';
 
-        return $html;
+        echo $html;
     }
 
     public static function loadFonts()
