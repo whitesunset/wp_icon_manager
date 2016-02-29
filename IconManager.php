@@ -526,7 +526,8 @@ class LA_IconManager
     protected function setName($path)
     {
         $file = basename($path);
-        $this->font_name = substr($file, 0, strpos($file, '.'));
+        $name = substr($file, 0, strpos($file, '.'));
+        $this->font_name = str_replace('+', '', $name);
         $this->paths['current'] = trailingslashit($this->paths['icon_sets']).$this->font_name;
     }
 
