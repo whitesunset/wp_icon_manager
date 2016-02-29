@@ -29,8 +29,8 @@ LAIconManager.prototype.bindField = function () {
             var icon = $(self.field).val().split('_####_')[1];
         }
 
-        self.set = set;
-        self.icon = icon;
+        self.set = self.sanitize(set);
+        self.icon = self.sanitize(icon);
 
         setTimeout(function () {
             $(self.el).trigger('iconManagerIconChanged');
@@ -61,8 +61,9 @@ LAIconManager.prototype.bindCustomField = function () {
             return;
         }
 
-        self.set = set;
-        self.icon = icon;
+        self.set = self.sanitize(set);
+        self.icon = self.sanitize(icon);
+
         $(self.field).val(set + '_####_' + icon).trigger('change');
         self.clearSelect();
     }
@@ -88,8 +89,8 @@ LAIconManager.prototype.bindSelect = function () {
         var set = $(this).parent('ul').data('set');
         var icon = $(this).data('icon');
 
-        self.set = set;
-        self.icon = icon;
+        self.set = self.sanitize(set);
+        self.icon = self.sanitize(icon);
 
         $(self.field).val(set + '_####_' + icon).trigger('change');
         $(self.custom_field).val('');
@@ -138,9 +139,7 @@ LAIconManager.prototype.bindUpload = function () {
     $(document).off('.la_icon_manager', '[data-action="icon_manager_upload"]');
     $(document).on('click.la_icon_manager', '[data-action="icon_manager_upload"]', function (e) {
         e.preventDefault();
-        var json,
-            url,
-            $notify = $('#la_icon_manager_notify'),
+        var $notify = $('#la_icon_manager_notify'),
             $spinner = $('.upload_icons .spinner');
 
         if (typeof file_frame !== 'undefined') {
@@ -298,6 +297,18 @@ LAIconManager.prototype.getCollection = function (filter) {
     return collection.models;
 }
 
+LAIconManager.prototype.sanitize = function (val) {
+    return val ? val.replace('+', ' ').trim() : val;
+}
+
+LAIconManager.prototype.getSet = function () {
+    return this.set ? this.sanitize(this.set) : '';
+}
+
+LAIconManager.prototype.getIcon = function () {
+    return this.icon ? this.sanitize(this.icon) : '';
+}
+
 LAIconManager.prototype.showIconSelect = function (filter, docs_url) {
     docs_url = typeof filter !== 'undefined' ? docs_url : '';
     filter = typeof filter !== 'undefined' ? filter : [];
@@ -326,8 +337,8 @@ LAIconManager.prototype.showIconSelect = function (filter, docs_url) {
         $field: $field,
         docs_url: docs_url,
         library: false,
-        current_set: self.set,
-        current_icon: self.icon
+        current_set: self.getSet(),
+        current_icon: self.getIcon()
     });
 
     return this;
