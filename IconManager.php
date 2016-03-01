@@ -125,10 +125,11 @@ class LA_IconManager
                 $n = 0;
                 foreach ($icon_set as $icons) {
                     $html .= 'var model_'.$n.' = new LAIconManagerModel();';
-                    $html .= 'var icons = [];';
+                    $html .= 'var icons = [';
                     foreach ($icons as $icon) {
-                        $html .= 'icons.push({class: "'.$icon['class'].'", tags: "'.$icon['tags'].'"});';
+                        $html .= '{class: "'.$icon['class'].'", tags: "'.$icon['tags'].'"},';
                     }
+                    $html .= '];';
                     $html .= 'model_'.$n.'.set("icons", icons);';
                     $html .= 'model_'.$n.'.set("name", "'.$font.'");';
                     $html .= 'collection.add(model_'.$n.');';
