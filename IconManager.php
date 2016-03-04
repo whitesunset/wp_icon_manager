@@ -2,6 +2,9 @@
 
 include_once ABSPATH.'/wp-admin/includes/class-wp-filesystem-base.php';
 
+/**
+ * Class LA_IconManager
+ */
 class LA_IconManager
 {
     protected $font_name;
@@ -18,11 +21,16 @@ class LA_IconManager
     private static $option = 'la_icon_fonts';
     private static $filters = array('\.eot', '\.svg', '\.ttf', '\.woff', '\.json', 'style\.css');
 
-    public function __construct()
+    /**
+     * LA_IconManager constructor.
+     * @param string $fonts
+     */
+    public function __construct($fonts = '')
     {
+        $default_fonts = $fonts !== '' && is_dir($fonts) ? $fonts : trailingslashit(plugin_dir_path(__FILE__).'default_fonts');
         $this->response = new \WP_Ajax_Response;
         $this->paths = wp_upload_dir();
-        $this->paths['default_fonts'] = trailingslashit(plugin_dir_path(__FILE__).'default_fonts');
+        $this->paths['default_fonts'] = $default_fonts;
         $this->paths['icon_sets'] = trailingslashit($this->paths['basedir']).'la_icon_sets';
         $this->paths['fonts_styles'] = content_url('uploads/la_icon_sets/style.min.css');
         $this->paths['config'] = 'charmap.php';
@@ -46,8 +54,13 @@ class LA_IconManager
         add_action('admin_footer', array($this, 'loadCollection'));
     }
 
+    /**
+     * Enqueue public scripts & styles
+     */
     public function enqueuePublicScripts()
     {
+        wp_enqueue_style('la-icon-maneger-style', $this->paths['fonts_styles']);
+
         wp_register_script('la-icon-manager-md5', self::$dir.'js/md5.js', array(), $this->version, false);
         wp_register_script('la-icon-manager-util', self::$dir.'js/util.js', array(), $this->version, false);
 
@@ -55,6 +68,9 @@ class LA_IconManager
         wp_enqueue_script('la-icon-manager-util');
     }
 
+    /**
+     * Enqueue admin scripts & styles
+     */
     public function enqueueAdminScripts()
     {
         wp_enqueue_style('la-icon-manager', self::$dir.'css/style.css');
@@ -97,6 +113,9 @@ class LA_IconManager
         wp_enqueue_script('la-icon-manager-app');
     }
 
+    /**
+     * Load fonts Backbone collection
+     */
     public function loadCollection()
     {
         $fonts = get_option(self::$option);
@@ -146,11 +165,11 @@ class LA_IconManager
         echo $html;
     }
 
-    public static function loadFonts()
-    {
-        wp_enqueue_style('la-icon-maneger-style', content_url('uploads/la_icon_sets/style.min.css'));
-    }
-
+    /**
+     * Upload & register default fonts
+     *
+     * @return bool
+     */
     protected function addDefaultFonts()
     {
         if(gettype(get_option(self::$option)) == 'array'){
@@ -166,6 +185,9 @@ class LA_IconManager
 
     }
 
+    /**
+     * Chack user capabilities
+     */
     protected function checkCapabilities()
     {
         $cap = apply_filters('avf_file_upload_capability', 'update_plugins');
@@ -179,6 +201,12 @@ class LA_IconManager
         }
     }
 
+    /**
+     * Upload font from archive
+     *
+     * @param $path
+     * @return bool
+     */
     protected function uploadFont($path)
     {
         $unzip = $this->unZip($path, self::$filters);
@@ -187,6 +215,9 @@ class LA_IconManager
         return $unzip && $config;
     }
 
+    /**
+     * AJAX handle for font upload
+     */
     public function ajax_handle_upload_icons()
     {
         $this->checkCapabilities();
@@ -209,6 +240,9 @@ class LA_IconManager
         die();
     }
 
+    /**
+     * AJAX handle for font delete
+     */
     public function ajax_handle_delete_icons()
     {
         $this->checkCapabilities();
@@ -232,6 +266,13 @@ class LA_IconManager
         die();
     }
 
+    /**
+     * unZIP archive with font
+     *
+     * @param $path
+     * @param $filter
+     * @return bool
+     */
     protected function unZip($path, $filter)
     {
         $zip = new ZipArchive();
@@ -311,6 +352,11 @@ class LA_IconManager
         }
     }
 
+    /**
+     * Create font config file
+     *
+     * @return bool
+     */
     protected function createConfig()
     {
         $this->json_file = $this->findFile('json');
@@ -378,7 +424,11 @@ class LA_IconManager
         return false;
     }
 
-    // Write config to PHP file
+    /**
+     * Write font config file
+     *
+     * @return bool
+     */
     protected function writeConfig()
     {
         $charmap = $this->paths['current'].'/'.$this->paths['config'];
@@ -407,7 +457,11 @@ class LA_IconManager
         }
     }
 
-    //re-writes the php config file for the font
+    /**
+     * Rewrite font-family name
+     *
+     * @return bool
+     */
     protected function rewriteFonts()
     {
         $files = array('.eot', '.ttf', '.woff', '.svg');
@@ -425,7 +479,11 @@ class LA_IconManager
         }
     }
 
-    //re-writes the php config file for the font
+    /**
+     * Rewrite CSS with new font-family name
+     *
+     * @return bool
+     */
     protected function rewriteCSS()
     {
         $style = $this->paths['current'].'/style.css';
@@ -459,6 +517,9 @@ class LA_IconManager
         }
     }
 
+    /**
+     * Minify & concatenate all fonts CSS files into one
+     */
     protected function minifyCSS()
     {
         $fonts = get_option(self::$option);
@@ -473,6 +534,9 @@ class LA_IconManager
         }
     }
 
+    /**
+     * Add font to WP option
+     */
     protected function addFont()
     {
         $fonts = get_option(self::$option);
@@ -488,7 +552,11 @@ class LA_IconManager
         update_option(self::$option, $fonts);
     }
 
-    //delete folder and contents if they already exist
+    /**
+     * Delete folder and contents if they already exist
+     *
+     * @param $path
+     */
     protected function deleteFolder($path)
     {
         if (is_dir($path)) {
@@ -503,6 +571,9 @@ class LA_IconManager
         }
     }
 
+    /**
+     * Delete font from WP option
+     */
     protected function deleteFont()
     {
         $fonts = get_option(self::$option);
@@ -513,7 +584,12 @@ class LA_IconManager
         update_option(self::$option, $fonts);
     }
 
-    // finds file with extension
+    /**
+     * Find file by extension
+     *
+     * @param $ext
+     * @return mixed
+     */
     protected function findFile($ext)
     {
         $files = scandir($this->paths['current']);
@@ -524,6 +600,11 @@ class LA_IconManager
         }
     }
 
+    /**
+     * Set font name
+     *
+     * @param $path
+     */
     protected function setName($path)
     {
         $file = basename($path);
@@ -532,6 +613,14 @@ class LA_IconManager
         $this->paths['current'] = trailingslashit($this->paths['icon_sets']).$this->font_name;
     }
 
+    /**
+     * Get AJAX response
+     *
+     * @param WP_Ajax_Response $response
+     * @param $data
+     * @param $type
+     * @return WP_Ajax_Response
+     */
     public function getResponce(\WP_Ajax_Response $response, $data, $type)
     {
         if ($type == 'errors') {
@@ -556,13 +645,26 @@ class LA_IconManager
         return $response;
     }
 
-    public static function getInstance()
+    /**
+     * Get module instance
+     *
+     * @param $fonts
+     * @return LA_IconManager
+     */
+    public static function getInstance($fonts = '')
     {
         if (self::$instance === null) {
-            return self::$instance = new LA_IconManager();
+            return self::$instance = new LA_IconManager($fonts);
         }
     }
 
+    /**
+     * Get icon set name
+     *
+     * @param $string
+     * @param string $delimeter
+     * @return bool
+     */
     public static function getSet($string, $delimeter = '_####_')
     {
         $info = explode($delimeter, $string);
@@ -572,6 +674,13 @@ class LA_IconManager
         return false;
     }
 
+    /**
+     * Get icon name
+     *
+     * @param $string
+     * @param string $delimeter
+     * @return bool
+     */
     public static function getIcon($string, $delimeter = '_####_')
     {
         $info = explode($delimeter, $string);
@@ -581,6 +690,14 @@ class LA_IconManager
         return false;
     }
 
+    /**
+     * Get icon CSS class
+     *
+     * @param $string
+     * @param string $delimeter
+     * @param string $prefix
+     * @return bool|string
+     */
     public static function getIconClass($string, $delimeter = '_####_', $prefix = 'la')
     {
         $info = explode($delimeter, $string);
@@ -591,6 +708,9 @@ class LA_IconManager
         return false;
     }
 
+    /**
+     * Optional method for delete option (e.g. on plugin deactivation)
+     */
     public static function deleteOption()
     {
         if(gettype(get_option(self::$option)) == 'array' && count(get_option(self::$option)) === 0){

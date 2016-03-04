@@ -1,26 +1,15 @@
-# wp_icon_manager
+# WordPress Icon Manager
 
-Init module
+Init module with 'path' to directory with fonts (optional)
 ```
-LA_IconManager::getInstance();
+LA_IconManager::getInstance('path');
 ```
 
-Bind `deleteOption` method to plugin deactivation (optionally). That will delete all fonts from wp_options table and also will reload default fonts on next plugin activation
+Bind `deleteOption` method to plugin deactivation (optional). That will delete all fonts from wp_options table and also will reload default fonts on next plugin activation
 ```
 register_deactivation_hook( __FILE__, 'LA_IconManager::deleteOption' );
 ```
 
-Call function that will be load front-end scripts & styles
-```
-add_action('wp_enqueue_scripts', 'load_scripts_handler');
-```
-
-Inside that function call Icon Manager method, that will be load compiled CSS with icon fonts
-```
-function load_scripts_handler(){
-  LA_IconManager::loadFonts();
-}
-```
 ## Icon Manager field format 
 Info about Set & Icon stored in one field with delimeter `_####_`
 For Example `Font-Awesome_####_heart`
