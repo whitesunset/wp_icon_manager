@@ -43,8 +43,6 @@ class LA_IconManager
             touch($this->paths['icon_sets'].'/style.min.css');
         }
 
-        $this->addDefaultFonts();
-
         add_action('admin_enqueue_scripts', array($this, 'enqueueAdminScripts'), 9);
         add_action('wp_enqueue_scripts', array($this, 'enqueuePublicScripts'), 9);
 
@@ -170,15 +168,14 @@ class LA_IconManager
      *
      * @return bool
      */
-    protected function addDefaultFonts()
+    public function addDefaultFonts()
     {
-        if(gettype(get_option(self::$option)) == 'array'){
-            return false;
-        }
+        $fonts = get_option(self::$option);
 
         $files = scandir($this->paths['default_fonts']);
         foreach($files as $file){
-            if ($file != '.' && $file != '..') {
+            $name = $this->getName($file);
+            if ($file !== '.' && $file != '..' && !isset($fonts[$name])) {
                 $this->uploadFont($this->paths['default_fonts'].$file);
             }
         }
@@ -600,6 +597,12 @@ class LA_IconManager
         }
     }
 
+    protected function getName($file)
+    {
+        $name = substr($file, 0, strpos($file, '.'));
+        return str_replace('+', '', $name);
+    }
+
     /**
      * Set font name
      *
@@ -608,8 +611,7 @@ class LA_IconManager
     protected function setName($path)
     {
         $file = basename($path);
-        $name = substr($file, 0, strpos($file, '.'));
-        $this->font_name = str_replace('+', '', $name);
+        $this->font_name = $this->getName($file);
         $this->paths['current'] = trailingslashit($this->paths['icon_sets']).$this->font_name;
     }
 
