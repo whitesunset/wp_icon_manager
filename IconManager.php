@@ -658,6 +658,7 @@ class LA_IconManager
         if (self::$instance === null) {
             return self::$instance = new LA_IconManager($fonts);
         }
+        return self::$instance;
     }
 
     /**
