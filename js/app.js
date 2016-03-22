@@ -30,7 +30,7 @@ LAIconManager.prototype.bindField = function () {
         }
 
         self.set = self.sanitize(set);
-        self.icon = self.sanitize(icon);
+        self.icon = icon;
 
         setTimeout(function () {
             $(self.el).trigger('iconManagerIconChanged');
@@ -62,7 +62,7 @@ LAIconManager.prototype.bindCustomField = function () {
         }
 
         self.set = self.sanitize(set);
-        self.icon = self.sanitize(icon);
+        self.icon = icon;
 
         $(self.field).val(set + '_####_' + icon).trigger('change');
         self.clearSelect();
@@ -90,7 +90,7 @@ LAIconManager.prototype.bindSelect = function () {
         var icon = $(this).data('icon');
 
         self.set = self.sanitize(set);
-        self.icon = self.sanitize(icon);
+        self.icon = icon;
 
         $(self.field).val(set + '_####_' + icon).trigger('change');
         $(self.custom_field).val('');
@@ -306,7 +306,7 @@ LAIconManager.prototype.getSet = function () {
 }
 
 LAIconManager.prototype.getIcon = function () {
-    return this.icon ? this.sanitize(this.icon) : '';
+    return this.icon ? this.icon : '';
 }
 
 LAIconManager.prototype.showIconSelect = function (filter, docs_url) {
