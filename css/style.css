@@ -142,6 +142,9 @@
     vertical-align: top;
     margin: 0 2px 2px 0;
 }
+.la-icon-manager ul.icons-list li:before{
+    display: none;
+}
 
 .la-icon-manager ul.icons-list li.active{
     background: #689ACB;
