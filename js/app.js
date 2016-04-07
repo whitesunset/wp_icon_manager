@@ -283,7 +283,7 @@ LAIconManager.prototype.showSearch = function () {
 }
 
 LAIconManager.prototype.getCollection = function (filter) {
-    var collection = this.collection ? this.collection.clone() : [];
+    var collection = this.collection.length > 0 ? this.collection.clone() : [];
     var self = this;
 
     if (filter instanceof Array && filter.length > 0) {
