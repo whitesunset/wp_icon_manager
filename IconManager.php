@@ -116,7 +116,7 @@ class LA_IconManager
      */
     public function loadCollection()
     {
-        $fonts = get_option(self::$option);
+        $fonts = get_site_option(self::$option);
 
         $html = '<script type="text/javascript">';
         $html .= 'jQuery(document).ready(function($) {';
@@ -170,7 +170,7 @@ class LA_IconManager
      */
     public function addDefaultFonts()
     {
-        $fonts = get_option(self::$option);
+        $fonts = get_site_option(self::$option);
 
         $files = scandir($this->paths['default_fonts']);
         foreach($files as $file){
@@ -519,7 +519,7 @@ class LA_IconManager
      */
     protected function minifyCSS()
     {
-        $fonts = get_option(self::$option);
+        $fonts = get_site_option(self::$option);
         if (is_array($fonts)) {
             $file = '';
             foreach ($fonts as $font => $info) {
@@ -536,7 +536,7 @@ class LA_IconManager
      */
     protected function addFont()
     {
-        $fonts = get_option(self::$option);
+        $fonts = get_site_option(self::$option);
         if (!$fonts) {
             $fonts = array();
         }
@@ -546,7 +546,7 @@ class LA_IconManager
             'style' => $this->font_name.'/style.css',
             'config' => $this->paths['config'],
         );
-        update_option(self::$option, $fonts);
+        update_site_option(self::$option, $fonts);
     }
 
     /**
@@ -573,12 +573,12 @@ class LA_IconManager
      */
     protected function deleteFont()
     {
-        $fonts = get_option(self::$option);
+        $fonts = get_site_option(self::$option);
         if (!$fonts) {
             $fonts = array();
         }
         unset($fonts[$this->font_name]);
-        update_option(self::$option, $fonts);
+        update_site_option(self::$option, $fonts);
     }
 
     /**
@@ -716,8 +716,8 @@ class LA_IconManager
      */
     public static function deleteOption()
     {
-        if(gettype(get_option(self::$option)) == 'array' && count(get_option(self::$option)) === 0){
-            delete_option(self::$option);
+        if(gettype(get_site_option(self::$option)) == 'array' && count(get_site_option(self::$option)) === 0){
+            delete_site_option(self::$option);
         }
     }
 
