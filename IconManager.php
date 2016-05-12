@@ -57,7 +57,7 @@ class LA_IconManager
      */
     public function enqueuePublicScripts()
     {
-        wp_enqueue_style('la-icon-maneger-style', $this->paths['fonts_styles'], array(), $this->version, false);
+        wp_enqueue_style('la-icon-manager-style', $this->paths['fonts_styles'], array(), $this->version, false);
 
         wp_register_script('la-icon-manager-md5', self::$dir.'js/md5.js', array(), $this->version, false);
         wp_register_script('la-icon-manager-util', self::$dir.'js/util.js', array(), $this->version, false);
@@ -72,7 +72,7 @@ class LA_IconManager
     public function enqueueAdminScripts()
     {
         wp_enqueue_style('la-icon-manager', self::$dir.'css/style.css');
-        wp_enqueue_style('la-icon-maneger-style', $this->paths['fonts_styles'], array(), $this->version, false);
+        wp_enqueue_style('la-icon-manager-style', $this->paths['fonts_styles'], array(), $this->version, false);
 
         wp_register_script('la-icon-manager-md5', self::$dir.'js/md5.js', array(), $this->version, true);
         wp_register_script(
