@@ -273,7 +273,7 @@ class LA_IconManager
     protected function unZip($path, $filter)
     {
         $zip = new ZipArchive();
-        $tmp = 'tmp.zip';
+        $tmp = $this->paths['icon_sets'] . '/tmp.zip';
 
         if (!copy($path, $tmp)) {
             $this->error = 'Failed to copy original ZIP file to temporary file';
