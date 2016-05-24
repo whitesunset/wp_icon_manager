@@ -1,14 +1,15 @@
 function LAIconManager(id, el, collection, field) {
-    var self = this;
     this.ajax = new AwesomeAjax('laim');
 
-    this.id = id;
-    this.el = el;
-    this.collection = collection || {};
-    this.field = field || '';
-
-    this.set = '';
-    this.icon = '';
+    this.model = new Backbone.Model({
+        id: id,
+        el: el,
+        field: field || '',
+        custom_field: '',
+        set: '',
+        icon: '',
+        collection: collection || {}
+    });
 
     this.bindSearch();
     this.bindUpload();
@@ -21,27 +22,27 @@ LAIconManager.prototype.bindField = function () {
     var dfd = $.Deferred();
 
     var handler = function () {
-        if (self.field === '') {
+        if (self.model.get('field') === '') {
             var set = '';
             var icon = '';
         } else {
-            var set = $(self.field).val().split('_####_')[0];
-            var icon = $(self.field).val().split('_####_')[1];
+            var set = $(self.model.get('field')).val().split('_####_')[0];
+            var icon = $(self.model.get('field')).val().split('_####_')[1];
         }
 
-        self.set = self.sanitize(set);
-        self.icon = icon;
+        self.model.set('set', self.sanitize(set));
+        self.model.set('icon', icon);
 
         setTimeout(function () {
-            $(self.el).trigger('iconManagerIconChanged');
+            $(self.model.get('el')).trigger('iconManagerIconChanged');
         }, 14);
 
         dfd.resolve();
     }
 
     handler();
-    $(document).off('change', self.field);
-    $(document).on('change', self.field, handler);
+    $(document).off('change', self.model.get('field'));
+    $(document).on('change', self.model.get('field'), handler);
 
     return dfd.promise();
 }
@@ -61,10 +62,10 @@ LAIconManager.prototype.bindCustomField = function () {
             return;
         }
 
-        self.set = self.sanitize(set);
-        self.icon = icon;
+        self.model.set('set', self.sanitize(set));
+        self.model.set('icon', icon);
 
-        $(self.field).val(set + '_####_' + icon).trigger('change');
+        $(self.model.get('field')).val(set + '_####_' + icon).trigger('change');
         self.clearSelect();
     }
 
@@ -74,7 +75,7 @@ LAIconManager.prototype.bindCustomField = function () {
 
 LAIconManager.prototype.clearSelect = function () {
     var $ = jQuery;
-    var $manager = $(this.el);
+    var $manager = $(self.model.get('el'));
     $('li', $manager).attr('class', '');
 }
 
@@ -83,17 +84,17 @@ LAIconManager.prototype.bindSelect = function () {
     var $ = jQuery;
     var dfd = $.Deferred();
 
-    $(document).off('.la_icon_manager', self.el + ' [data-action="change-icon"]');
-    $(document).on('click.la_icon_manager', self.el + ' [data-action="change-icon"]', function (e) {
-        var $manager = $(self.el);
+    $(document).off('.la_icon_manager', self.model.get('el') + ' [data-action="change-icon"]');
+    $(document).on('click.la_icon_manager', self.model.get('el') + ' [data-action="change-icon"]', function (e) {
+        var $manager = $(self.model.get('el'));
         var set = $(this).parent('ul').data('set');
         var icon = $(this).data('icon');
 
-        self.set = self.sanitize(set);
-        self.icon = icon;
+        self.model.set('set', self.sanitize(set));
+        self.model.set('icon',  icon);
 
-        $(self.field).val(set + '_####_' + icon).trigger('change');
-        $(self.custom_field).val('');
+        $(self.model.get('field')).val(set + '_####_' + icon).trigger('change');
+        $(self.model.get('custom_field')).val('');
         $('li', $manager).attr('class', '');
         $(this).addClass('active');
     });
@@ -228,7 +229,7 @@ LAIconManager.prototype.bindDelete = function () {
             success_handler: function (data) {
                 $spinner.css('visibility', 'hidden');
                 $notify.html('Icon pack deleted!').show();
-                $('.icon-set-' + font.toLowerCase().replace_all(' ', '_'), $(self.el)).hide();
+                $('.icon-set-' + font.toLowerCase().replace_all(' ', '_'), $(self.model.get('el'))).hide();
                 if (window['la_icon_manager_collection'].contains(font)) {
                     var model = window['la_icon_manager_collection'].findWhere({'name': font});
                     window['la_icon_manager_collection'].remove(model);
@@ -260,63 +261,52 @@ LAIconManager.prototype.bindPreview = function () {
     var $ = jQuery;
     var self = this;
 
-    $(document).off('.la_icon_manager', this.el);
-    $(document).on('iconManagerIconChanged.la_icon_manager', this.el, function () {
-        var $preview = $('.preview', $(self.el));
+    $(document).off('.la_icon_manager', self.model.get('el'));
+    $(document).on('iconManagerIconChanged.la_icon_manager', self.model.get('el'), function () {
+        var $preview = $('.preview', $(self.model.get('el')));
         var icon;
-        if (self.set === '####') {
-            icon = '<i class="custom" style="background-image:url(' + self.icon + ')"></i>';
+        if (self.getSet() === '####') {
+            icon = '<i class="custom" style="background-image:url(' + self.model.get('icon') + ')"></i>';
         } else {
-            icon = '<i class="la' + md5(self.set) + '-' + self.icon + '"></i>';
+            icon = '<i class="la' + md5(self.getSet()) + '-' + self.model.get('icon') + '"></i>';
         }
         $preview.html(icon)
     });
 }
 
-LAIconManager.prototype.showSearch = function () {
-    var view = new LAIconManagerView({
-        template: la_icon_manager_templates['search']
-    });
-    view.render();
-
-    return this;
-}
-
 LAIconManager.prototype.getCollection = function (filter) {
-    var collection = this.collection.length > 0 ? this.collection.clone() : [];
     var self = this;
+    var collection = self.model.get('collection') ? self.model.get('collection').clone() : [];
 
     if (filter instanceof Array && filter.length > 0) {
         collection.reset();
         filter.forEach(function (item) {
-            var model = self.collection.findWhere({name: item});
+            var model = self.model.get('collection').findWhere({name: item});
             collection.add(model);
         });
     }
 
-    return collection.models;
+    return collection.toJSON();
 }
 
 LAIconManager.prototype.sanitize = function (val) {
-    return val ? val.replace('+', ' ').trim() : val;
+    return val ? val.replace(/\+/gi, ' ').trim() : val;
 }
 
 LAIconManager.prototype.getSet = function () {
-    return this.set ? this.sanitize(this.set) : '';
+    return this.model.get('set') ? this.sanitize(this.model.get('set')) : '';
 }
 
 LAIconManager.prototype.getIcon = function () {
-    return this.icon ? this.icon : '';
+    return this.model.get('icon') ? this.model.get('icon') : '';
 }
 
 LAIconManager.prototype.showIconSelect = function (filter, docs_url) {
     docs_url = typeof filter !== 'undefined' ? docs_url : '';
     filter = typeof filter !== 'undefined' ? filter : [];
 
-    var $ = jQuery;
     var self = this;
-    var $field = $(this.field);
-    this.custom_field = '[name="la_icon_manager_' + self.id + '_custom"]';
+    self.model.set('custom_field', '[name="la_icon_manager_' + this.model.get('id') + '_custom"]');
     var collection = this.getCollection(filter);
 
     self.bindField()
@@ -324,37 +314,33 @@ LAIconManager.prototype.showIconSelect = function (filter, docs_url) {
 
     var view = new LAIconManagerView({
         template: la_icon_manager_templates['select'],
-        el: this.el,
+        el: this.model.get('el'),
+        model: this.model,
+        collection: collection,
+        docs_url: docs_url,
+        library: false,
         afterRender: function () {
             self.bindSelect().then(function () {
                 self.bindPreview();
             });
         }
     });
-    view.render({
-        id: self.id,
-        items: collection,
-        $field: $field,
-        docs_url: docs_url,
-        library: false,
-        current_set: self.getSet(),
-        current_icon: self.getIcon()
-    });
+    view.render();
 
     return this;
 }
 
 LAIconManager.prototype.showLibrary = function (filter) {
     filter = typeof filter !== 'undefined' ? filter : [];
+    var collection = this.getCollection(filter);
     var view = new LAIconManagerView({
         template: la_icon_manager_templates['library'],
-        el: this.el
-    });
-    var collection = this.getCollection(filter);
-    view.render({
-        items: collection,
+        el: this.model.get('el'),
+        model: this.model,
+        collection: collection,
         library: true
     });
+    view.render();
 
     return this;
 }

@@ -14,8 +14,8 @@ window.la_icon_manager_templates = {
                 <span class="spinner"></span>\
             </div>',
     sets: _.template(
-        '<% _.each(items, function(item){ %>\
-            <% print(la_icon_manager_templates.set({item: item.attributes, library: library, current_set: current_set, current_icon: current_icon})); %>\
+        '<% _.each(collection, function(item){ %>\
+            <% print(la_icon_manager_templates.set({item: item, library: library, set: set, icon: icon})); %>\
         <% }); %>'),
     set: _.template(
         '<div class="icon-set icon-set-<%= item.name.toLowerCase().replace_all(\' \', \'_\') %>">\
@@ -34,9 +34,9 @@ window.la_icon_manager_templates = {
                 <div class="inside">\
                     <div class="a-scroll">\
                         <ul class="icons-list" data-set="<% print(item.name) %>">\
-                            <% _.each(item.icons, function(icon){ %>\
-                                <% var active = (current_set == item.name && current_icon == icon.class) ? "active" : ""; %>\
-                                <% print(la_icon_manager_templates.icon({font: item.name, icon: icon, active: active})); %>\
+                            <% _.each(item.icons, function(el){ %>\
+                                <% var active = (set == item.name && icon == el.class) ? "active" : ""; %>\
+                                <% print(la_icon_manager_templates.icon({font: item.name, icon: el, active: active})); %>\
                             <% }); %>\
                         </ul>\
                     </div>\
@@ -54,13 +54,13 @@ window.la_icon_manager_templates = {
                 <%= la_icon_manager_templates.search %>\
                 <div class="icon-manager-body">\
                     <div class="icon-list a-scroll">\
-                        <% print(la_icon_manager_templates.sets({items: items, library: library, current_set: current_set, current_icon: current_icon})); %>\
+                        <% print(la_icon_manager_templates.sets({collection: collection, library: library, set: set, icon: icon})); %>\
                     </div>\
                 </div>\
                 <div class="icon-manager-footer">\
                     <% var custom_icon = "";\
-                    if(current_set === "####") {\
-                        custom_icon = current_icon\
+                    if(set === "####") {\
+                        custom_icon = icon\
                     } %>\
                     <div class="form-group">\
                         <input class="custom-icon-source" type="text" name="la_icon_manager_<%= id %>_custom" placeholder="Or input base64 code" value="<%= custom_icon %>">\
@@ -80,6 +80,6 @@ window.la_icon_manager_templates = {
         '<div class="la-icon-manager">\
             <%= la_icon_manager_templates.upload %>\
             <div id="la_icon_manager_notify" class="notify"></div>\
-            <% print(la_icon_manager_templates.sets({items: items, library: library, current_set: "", current_icon: ""})); %>\
+            <% print(la_icon_manager_templates.sets({collection: collection, library: library, set: "", icon: ""})); %>\
         </div>')
 }

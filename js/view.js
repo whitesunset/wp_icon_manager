@@ -1,17 +1,32 @@
 LAIconManagerView = Backbone.View.extend({
+    events: {
+        'click .preview': 'resetIcon'
+    },
     initialize: function (data) {
         this.template = data.template;
-        this.$el = jQuery(data.el);
+        this.model = _.extend({}, this.model.toJSON(), data);
 
-        this.on('render', data.afterRender || this.afterRander);
+        // this.listenTo(this.model, 'change', this.render);
+        this.on('render', data.afterRender || this.afterRender);
     },
-    afterRander: function () {
+    afterRender: function () {},
+    render: function () {
 
-    },
-    render: function (data) {
         this.$el.empty();
-        this.$el.append(this.template(data));
+        this.$el.append(this.template(this.model));
         this.trigger('render');
         return this;
     },
+    resetIcon: function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        this.model.set = '';
+        this.model.icon = '';
+
+        $(this.model.field).val('');
+        $(this.model.custom_field).val('');
+
+        this.render();
+    }
 });
