@@ -54,7 +54,7 @@ window.la_icon_manager_templates = {
                 <%= la_icon_manager_templates.search %>\
                 <div class="icon-manager-body">\
                     <div class="icon-list a-scroll">\
-                        <% print(la_icon_manager_templates.sets({collection: collection, library: library, set: set, icon: icon})); %>\
+                        <% print(la_icon_manager_templates.sets({collection: collection, library: false, set: set, icon: icon})); %>\
                     </div>\
                 </div>\
                 <div class="icon-manager-footer">\
@@ -80,6 +80,6 @@ window.la_icon_manager_templates = {
         '<div class="la-icon-manager">\
             <%= la_icon_manager_templates.upload %>\
             <div id="la_icon_manager_notify" class="notify"></div>\
-            <% print(la_icon_manager_templates.sets({collection: collection, library: library, set: "", icon: ""})); %>\
+            <% print(la_icon_manager_templates.sets({collection: collection, library: true, set: "", icon: ""})); %>\
         </div>')
 }

@@ -318,7 +318,6 @@ LAIconManager.prototype.showIconSelect = function (filter, docs_url) {
         model: this.model,
         collection: collection,
         docs_url: docs_url,
-        library: false,
         afterRender: function () {
             self.bindSelect().then(function () {
                 self.bindPreview();
@@ -338,7 +337,6 @@ LAIconManager.prototype.showLibrary = function (filter) {
         el: this.model.get('el'),
         model: this.model,
         collection: collection,
-        library: true
     });
     view.render();
 
