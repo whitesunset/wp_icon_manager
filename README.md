@@ -1,5 +1,9 @@
 # WordPress Icon Manager
 
+![Library](https://dl.dropboxusercontent.com/spa/lgd5zlzlwn690gm/-ssmdwc0.png)
+
+![Icon Select](https://dl.dropboxusercontent.com/spa/lgd5zlzlwn690gm/l12zkbyv.png)
+
 Init module with 'path' to directory with fonts (optional)
 ```
 LA_IconManager::getInstance('path');
