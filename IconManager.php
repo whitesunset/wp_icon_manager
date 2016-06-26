@@ -43,9 +43,6 @@ class LA_IconManager
             touch($this->paths['icon_sets'].'/style.min.css');
         }
 
-        add_action('admin_enqueue_scripts', array($this, 'enqueueAdminScripts'), 9);
-        add_action('wp_enqueue_scripts', array($this, 'enqueuePublicScripts'), 9);
-
         add_action('wp_ajax_laim_upload_icons', array($this, 'ajax_handle_upload_icons'));
         add_action('wp_ajax_laim_delete_icons', array($this, 'ajax_handle_delete_icons'));
 
