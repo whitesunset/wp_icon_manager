@@ -94,12 +94,6 @@
     padding-left: 0;
 }
 
-.la-icon-manager .icon_search{
-    /*max-height: 110px;
-    height: auto;
-    overflow: scroll;
-    overflow-x: hidden;*/
-}
 .la-icon-manager .selector .icon_search{
     overflow: visible;
     max-height: inherit;
@@ -111,6 +105,10 @@
     padding: 5px 0;
     height: auto;
     overflow-y: auto;
+}
+.la-icon-manager .icon-list:before,
+.la-icon-manager .icon-list:after{
+    display: none;
 }
 .la-icon-manager .a-scroll .a-scroll{
     overflow: visible;
